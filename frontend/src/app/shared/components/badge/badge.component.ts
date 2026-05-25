@@ -1,15 +1,31 @@
-import { Component, HostBinding, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, ViewEncapsulation } from '@angular/core';
+
+import type { ClassValue } from 'clsx';
+
+import { mergeClasses } from 'src/app/shared/utils/merge-classes';
+
+import { badgeVariants, type ZardBadgeShapeVariants, type ZardBadgeTypeVariants } from './badge.variants';
 
 @Component({
   selector: 'z-badge',
-  standalone: true,
-  template: '<ng-content></ng-content>'
+  template: `
+    <ng-content />
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  host: {
+    '[class]': 'classes()',
+    '[attr.data-type]': 'zType()',
+  },
+  exportAs: 'zBadge',
 })
 export class ZardBadgeComponent {
-  readonly zType = input<'default' | 'secondary' | 'destructive'>('default');
+  readonly zType = input<ZardBadgeTypeVariants>('default');
+  readonly zShape = input<ZardBadgeShapeVariants>('default');
 
-  @HostBinding('class')
-  get classes(): string {
-    return `z-badge z-badge-${this.zType()}`;
-  }
+  readonly class = input<ClassValue>('');
+
+  protected readonly classes = computed(() =>
+    mergeClasses(badgeVariants({ zType: this.zType(), zShape: this.zShape() }), this.class()),
+  );
 }

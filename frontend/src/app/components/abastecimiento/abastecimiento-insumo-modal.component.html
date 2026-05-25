@@ -1,0 +1,35 @@
+<section class="modal-backdrop" role="presentation" (click)="close()">
+  <z-card class="modal-card" zTitle="Registrar insumo" (click)="$event.stopPropagation()">
+    <form class="modal-form" [formGroup]="ingredientForm" (ngSubmit)="createIngredient()">
+      <label>
+        Nombre
+        <input z-input formControlName="name" placeholder="Leche entera" />
+      </label>
+      <label>
+        Unidad
+        <select class="supply-select" formControlName="unit">
+          @for (unit of unitOptions; track unit.value) {
+            <option [value]="unit.value">{{ unit.label }} ({{ unit.shortLabel }})</option>
+          }
+        </select>
+      </label>
+      <label>
+        Stock inicial
+        <input z-input type="number" formControlName="currentStock" />
+      </label>
+      <label>
+        Costo promedio
+        <input z-input type="number" formControlName="averageCost" />
+      </label>
+      <label>
+        Stock mínimo
+        <input z-input type="number" formControlName="minimumStock" />
+      </label>
+
+      <footer class="modal-actions">
+        <button z-button zType="outline" type="button" (click)="close()">Cancelar</button>
+        <button z-button type="submit">Guardar insumo</button>
+      </footer>
+    </form>
+  </z-card>
+</section>

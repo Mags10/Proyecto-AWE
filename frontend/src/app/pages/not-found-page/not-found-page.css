@@ -4,7 +4,7 @@
   place-content: center;
   gap: 0.6rem;
   text-align: center;
-  background: #f3efe7;
+  background: var(--page-bg);
 }
 
 .not-found h1 {

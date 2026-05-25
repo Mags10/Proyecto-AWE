@@ -1,0 +1,90 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: var(--overlay-bg);
+}
+
+.modal-card {
+  width: min(720px, 100%);
+}
+
+.modal-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  color: #6a5b4f;
+  font-size: 0.9rem;
+}
+
+.supply-select {
+  min-height: 38px;
+  border: 1px solid #e4ded3;
+  border-radius: 10px;
+  padding: 0.5rem 0.72rem;
+  background: var(--surface);
+  color: #2b2017;
+  font: inherit;
+}
+
+.wac-preview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+  border: 1px solid #e4ded3;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: var(--surface-soft);
+}
+
+.wac-preview div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.wac-preview span,
+.wac-preview p {
+  margin: 0;
+  color: #6f6154;
+  font-size: 0.86rem;
+}
+
+.wac-preview strong {
+  color: #25180f;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.15rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+@media (max-width: 720px) {
+  .modal-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .modal-actions button {
+    flex: 1;
+  }
+
+  .wac-preview {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .wac-preview {
+    grid-template-columns: 1fr;
+  }
+}

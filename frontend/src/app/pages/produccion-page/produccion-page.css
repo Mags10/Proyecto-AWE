@@ -1,6 +1,6 @@
 .page-shell {
   padding: 1.2rem;
-  background: #f3efe7;
+  background: var(--page-bg);
   min-height: calc(100vh - 120px);
 }
 
@@ -38,7 +38,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.7rem;
-  background: #fbfaf8;
+  background: var(--surface-muted);
 }
 
 .recipe-item.active {
@@ -64,7 +64,7 @@ label {
 .stock-box {
   margin: 0.7rem 0;
   border-radius: 10px;
-  background: #ede8de;
+  background: var(--surface-alt);
   padding: 0.75rem;
   display: grid;
   grid-template-columns: 1fr auto;

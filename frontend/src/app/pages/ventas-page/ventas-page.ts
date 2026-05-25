@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ProductCard } from '../../components/product-card/product-card';
+import { ProductCard } from '../../components/catalog/product-card/product-card';
 
 @Component({
   selector: 'app-ventas-page',

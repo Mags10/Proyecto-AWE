@@ -1,6 +1,6 @@
 .page-shell {
   padding: 1.2rem;
-  background: #f3efe7;
+  background: var(--page-bg);
   min-height: calc(100vh - 120px);
 }
 
@@ -63,7 +63,7 @@
 
 .summary {
   margin-top: 1rem;
-  background: linear-gradient(135deg, #653d26, #7c4a2d);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
   color: #fff;
   border-radius: 12px;
   padding: 1rem;

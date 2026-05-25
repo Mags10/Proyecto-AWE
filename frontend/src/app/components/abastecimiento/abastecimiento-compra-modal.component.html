@@ -1,0 +1,47 @@
+<section class="modal-backdrop" role="presentation" (click)="close()">
+  <z-card class="modal-card purchase-modal" zTitle="Registrar compra" (click)="$event.stopPropagation()">
+    <form class="modal-form" [formGroup]="purchaseForm" (ngSubmit)="registerPurchase()">
+      <label>
+        Proveedor
+        <input z-input formControlName="provider" placeholder="Lácteos del Valle" />
+      </label>
+      <label>
+        Fecha
+        <input z-input type="date" formControlName="invoiceDate" />
+      </label>
+      <label>
+        Insumo
+        <select class="supply-select" formControlName="ingredientId">
+          <option value="">Selecciona un insumo</option>
+          @for (ingredient of supplyService.ingredients(); track ingredient._id) {
+            <option [value]="ingredient._id">{{ ingredient.name }} ({{ ingredient.unit }})</option>
+          }
+        </select>
+      </label>
+      <label>
+        Cantidad
+        <input z-input type="number" formControlName="quantityReceived" />
+      </label>
+      <label>
+        Precio total
+        <input z-input type="number" formControlName="totalPrice" />
+      </label>
+
+      <section class="wac-preview">
+        @if (supplyService.selectedIngredient(); as ingredient) {
+          <div><span>Stock actual</span><strong>{{ ingredient.currentStock }} {{ ingredient.unit }}</strong></div>
+          <div><span>WAC actual</span><strong>${{ ingredient.averageCost.toFixed(2) }}</strong></div>
+          <div><span>Unitario</span><strong>${{ supplyService.unitPrice().toFixed(2) }}</strong></div>
+          <div><span>Nuevo WAC</span><strong>${{ supplyService.projectedAverageCost().toFixed(2) }}</strong></div>
+        } @else {
+          <p>Selecciona un insumo para calcular el nuevo WAC.</p>
+        }
+      </section>
+
+      <footer class="modal-actions">
+        <button z-button zType="outline" type="button" (click)="close()">Cancelar</button>
+        <button z-button type="submit" [zLoading]="supplyService.loading()">Registrar compra</button>
+      </footer>
+    </form>
+  </z-card>
+</section>

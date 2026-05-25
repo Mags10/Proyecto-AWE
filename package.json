@@ -7,6 +7,8 @@
     "backend"
   ],
   "scripts": {
+    "api:types": "node scripts/generate-api-types.js",
+    "seed:supply": "npm run seed:supply --workspace backend",
     "start": "docker-compose up --build"
   }
 }

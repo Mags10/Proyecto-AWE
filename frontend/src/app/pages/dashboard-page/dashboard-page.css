@@ -1,6 +1,6 @@
 .page-shell {
   padding: 1.2rem;
-  background: #f3efe7;
+  background: var(--page-bg);
   min-height: calc(100vh - 120px);
 }
 

@@ -9,6 +9,8 @@ class Server {
     this.port = process.env.PORT || 3000;
 
     this.statusPath = '/api/status';
+    this.ingredientsPath = '/api/ingredients';
+    this.purchaseRecordsPath = '/api/purchase-records';
 
     this.middlewares();
     this.routes();
@@ -21,7 +23,10 @@ class Server {
   }
 
   routes() {
+    this.app.use('/api', require('../routes/docs.route'));
     this.app.use(this.statusPath, require('../routes/status.route'));
+    this.app.use(this.ingredientsPath, require('../routes/ingredients.route'));
+    this.app.use(this.purchaseRecordsPath, require('../routes/purchase-records.route'));
 
     this.app.get('/', (req, res) => {
       res.json({

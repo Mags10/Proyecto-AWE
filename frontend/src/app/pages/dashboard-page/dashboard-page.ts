@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { KpiCard } from '../../components/kpi-card/kpi-card';
-import { ChartCard } from '../../components/chart-card/chart-card';
-import { AlertsTable } from '../../components/alerts-table/alerts-table';
+import { KpiCard } from '../../components/dashboard/kpi-card/kpi-card';
+import { ChartCard } from '../../components/dashboard/chart-card/chart-card';
+import { AlertsTable } from '../../components/dashboard/alerts-table/alerts-table';
 
 @Component({
   selector: 'app-dashboard-page',

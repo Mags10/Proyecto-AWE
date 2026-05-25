@@ -1,0 +1,86 @@
+<main class="page-shell">
+  <section class="page-head">
+    <div>
+      <h1>Abastecimiento</h1>
+      <p>Inventario de insumos y costo promedio ponderado.</p>
+    </div>
+
+    <div class="head-actions">
+      <button z-button zType="outline" type="button" (click)="ingredientModalOpen.set(true)">Registrar insumo</button>
+    </div>
+  </section>
+
+  @if (error()) {
+    <p class="error-message">{{ error() }}</p>
+  }
+
+  @if (lastPurchase(); as purchase) {
+    <section class="status-strip">
+      <span>Compra registrada</span>
+      <strong>{{ purchase.ingredient.name }}</strong>
+      <span>Stock: {{ purchase.newStock }} {{ unitLabel(purchase.ingredient.unit) }}</span>
+      <z-badge zType="secondary">WAC ${{ purchase.newAverageCost.toFixed(2) }}</z-badge>
+    </section>
+  }
+
+  <section class="content-stack">
+    <z-card zTitle="Insumos">
+      <div class="table-wrap">
+        <table z-table>
+          <thead z-table-header>
+            <tr z-table-row>
+              <th z-table-head>Insumo</th>
+              <th z-table-head>Stock</th>
+              <th z-table-head>Costo promedio</th>
+              <th z-table-head>Stock mínimo</th>
+              <th z-table-head>Estado</th>
+              <th z-table-head>Compras</th>
+            </tr>
+          </thead>
+          <tbody z-table-body>
+            @for (ingredient of ingredients(); track ingredient._id) {
+              <tr z-table-row>
+                <td z-table-cell>{{ ingredient.name }}</td>
+                <td z-table-cell>{{ ingredient.currentStock }} {{ unitLabel(ingredient.unit) }}</td>
+                <td z-table-cell>${{ ingredient.averageCost.toFixed(2) }}</td>
+                <td z-table-cell>{{ ingredient.minimumStock }} {{ unitLabel(ingredient.unit) }}</td>
+                <td z-table-cell>
+                  @if (ingredient.currentStock <= ingredient.minimumStock) {
+                    <z-badge zType="destructive">Bajo stock</z-badge>
+                  } @else {
+                    <z-badge zType="secondary">Disponible</z-badge>
+                  }
+                </td>
+                <td z-table-cell>
+                  <button z-button zType="outline" zSize="sm" type="button" (click)="openPurchaseHistory(ingredient)">
+                    Ver compras
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr z-table-row>
+                <td z-table-cell colspan="6">No hay insumos registrados.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </z-card>
+  </section>
+
+  @if (ingredientModalOpen()) {
+    <app-abastecimiento-insumo-modal (closed)="ingredientModalOpen.set(false)"></app-abastecimiento-insumo-modal>
+  }
+
+  @if (purchaseModalOpen()) {
+    <app-abastecimiento-compra-modal (closed)="purchaseModalOpen.set(false)"></app-abastecimiento-compra-modal>
+  }
+
+  @if (historyModalOpen()) {
+    <app-abastecimiento-historial-modal
+      [ingredient]="selectedHistoryIngredient()"
+      (closed)="historyModalOpen.set(false)"
+      (addPurchase)="openPurchaseFromHistory()"
+    ></app-abastecimiento-historial-modal>
+  }
+</main>
