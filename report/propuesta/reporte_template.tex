@@ -1,0 +1,391 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{newtxtext,newtxmath}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+
+% Configuración de página
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=2.5cm,
+    right=2.5cm,
+    headheight=1.5cm,
+    footskip=1cm
+}
+
+% Configuración de títulos
+\titleformat{\section}{\large\bfseries}{\thesection.}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection)}{1em}{}
+
+% Configuración de encabezados y pies de página
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \textit{\nombreproyecto}}
+\fancyhead[R]{\small \materia}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% =====================================================
+% VARIABLES - PERSONALIZAR AQUÍ
+% =====================================================
+\newcommand{\universidad}{UNIVERSIDAD AUTÓNOMA DE SAN LUIS POTOSÍ}
+\newcommand{\facultad}{Facultad de Ingeniería}
+\newcommand{\carrera}{Ingeniería en Computación}
+\newcommand{\materia}{Aplicaciones Web Escalables (224501)}
+\newcommand{\nombreproyecto}{KitchenFlow: Control de Producción y Costeo para Cafeterías}
+\newcommand{\autores}{Miguel Alejandro Gutiérrez Silva}
+\newcommand{\fecha}{Semestre 2025-2026/II}
+\newcommand{\profesor}{Ing. Francisco Javier Gómez Vázquez}
+
+\begin{document}
+
+\onecolumn
+\singlespacing
+
+% =====================================================
+% PÁGINA DE PRESENTACIÓN
+% =====================================================
+\thispagestyle{empty}
+
+\begin{center}
+	\vspace*{0.5cm}
+
+	{\color{black!70}\rule{\textwidth}{1.5pt}}
+
+	\vspace{0.8cm}
+
+	{\LARGE \textbf{\universidad}}
+
+	\vspace{0.5cm}
+
+	{\Large \facultad}
+
+	\vspace{0.3cm}
+
+	{\large \carrera}
+
+	\vspace{0.8cm}
+
+	{\color{black!40}\rule{0.6\textwidth}{0.5pt}}
+
+	\vspace{0.8cm}
+
+	{\large Propuesta de Proyecto}
+
+	\vspace{0.2cm}
+
+	{\Large \textbf{\materia}}
+
+	\vspace{1.5cm}
+
+	\fbox{%
+		\parbox{0.85\textwidth}{%
+			\vspace{0.5cm}
+			\centering
+			{\LARGE \textbf{\nombreproyecto}}
+			\vspace{0.5cm}
+		}%
+	}
+
+	\vspace{1.5cm}
+
+	\colorbox{black!5}{%
+		\parbox{0.75\textwidth}{%
+			\vspace{0.4cm}
+			\begin{tabular}{rl}
+				\textbf{Alumno:}   & \parbox[t]{8cm}{\autores} \\[0.6cm]
+				\textbf{Profesor:} & \profesor                 \\[0.25cm]
+				\textbf{Fecha:}    & \fecha                    \\
+			\end{tabular}
+			\vspace{0.4cm}
+		}%
+	}
+
+	\vfill
+
+	{\color{black!70}\rule{\textwidth}{1.5pt}}
+
+	\vspace{0.3cm}
+
+\end{center}
+
+\newpage
+
+\section{Descripción General del Proyecto}
+KitchenFlow es un sistema integral de control de producción diseñado para la gestión operativa y financiera de una cafetería. El sistema permite transformar materia prima en productos terminados mediante un recetario detallado con cálculo automático de costos y márgenes de utilidad.
+
+\section{Usuarios y Seguridad}
+El sistema implementa un esquema de seguridad basado en roles (RBAC) gestionado a través de \textbf{JWT (JSON Web Tokens)} y políticas de acceso a nivel de base de datos con \textbf{ZenStack}.
+
+\begin{itemize}
+	\item \textbf{Administrador:} Acceso total al sistema, gestión de usuarios, costos base y analítica financiera (\textit{véase fig. \ref{fig:seq_auth}}).
+	\item \textbf{Personal de Cocina:} Registra producción y mermas; puede consultar recetas pero no modificar precios base.
+	\item \textbf{Personal de Piso (Mesero):} Interfaz restringida únicamente al despacho de productos terminados.
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,keepaspectratio]{diagramas/auth_rbac_flow}}
+	\caption{Secuencia de Autenticación y Autorización basada en Roles.}
+	\label{fig:seq_auth}
+\end{figure}
+
+\section{Arquitectura y Stack Tecnológico}
+Se utiliza una arquitectura desacoplada con \textbf{Hono} (Backend) y \textbf{Angular} (Frontend). La integridad de los tipos se garantiza compartiendo esquemas de validación entre ambas capas, asegurando que cualquier cambio en la estructura de datos sea detectado en tiempo de compilación.
+
+El diagrama de la Fig. \ref{fig:arquitectura} resume tres capas coordinadas:
+\begin{itemize}
+	\item \textbf{Cliente Angular 18}: Componentes UI y señales que consumen contratos RPC generados a partir de esquemas Zod compartidos.
+	\item \textbf{Servicios Hono}: Middleware JWT, controladores y contratos tipados bajo el mismo paquete de DTOs, evitando divergencias entre frontend y backend.
+	\item \textbf{Persistencia ZenStack/Prisma}: Políticas declarativas que se ejecutan antes de tocar PostgreSQL 16, manteniendo coherencia de negocio en cada transacción.
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.5\textheight,keepaspectratio]{diagramas/Arquitectura}}
+	\caption{Arquitectura del sistema KitchenFlow destacando el flujo de datos tipados.}
+	\label{fig:arquitectura}
+\end{figure}
+
+\section{Especificación de Requerimientos Funcionales}
+
+\subsection{Recetario y Gestión de Costos Promedio}
+A diferencia de sistemas estáticos, KitchenFlow utiliza la metodología de \textbf{Costo Promedio Ponderado} para el inventario de insumos. Si el precio de un ingrediente varía entre compras, el sistema recalcula el costo unitario de la receta automáticamente (\textit{véase fig. \ref{fig:seq_recetario}}).
+\begin{itemize}
+	\item \textbf{Conversión de Unidades:} Manejo de factores de conversión entre unidades de compra (ej. Bulto 20kg) y consumo (ej. gramos).
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,keepaspectratio]{diagramas/recipe_cost_editor}}
+	\caption{Secuencia de Configuración de Recetas y Costeo.}
+	\label{fig:seq_recetario}
+\end{figure}
+
+\subsection{Motor de Explosión de Materiales y Producción}
+El registro de producción activa una transacción atómica que valida el stock físico antes de realizar la "explosión" de la receta, transformando los insumos en existencias de vitrina (\textit{véase fig. \ref{fig:seq_produccion}}).
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,keepaspectratio]{diagramas/production_batch}}
+	\caption{Secuencia de Registro de Producción (Explosión de Materiales con transacción).}
+	\label{fig:seq_produccion}
+\end{figure}
+
+\subsection{Control de Mermas y Despacho}
+El sistema permite identificar fugas mediante el cruce entre la producción registrada y las salidas marcadas por el personal de piso (\textit{véase fig. \ref{fig:seq_ventas}} y \ref{fig:seq_mermas}).
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,keepaspectratio]{diagramas/product_stock_sale}}
+	\caption{Secuencia de Despacho de Ventas (ajuste inmediato de stock de vitrina).}
+	\label{fig:seq_ventas}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,keepaspectratio]{diagramas/waste_stock_adjustment}}
+	\caption{Secuencia de Registro de Mermas.}
+	\label{fig:seq_mermas}
+\end{figure}
+
+\subsection{Abastecimiento y Costo Promedio Ponderado}
+Cada registro de compra actualiza el costo promedio del ingrediente antes de validarse una nueva producción. El flujo de la Fig. \ref{fig:seq_abastecimiento} detalla cómo se recalcula el WAC y se actualiza ZenStack/Prisma.
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,width=0.85\textwidth,keepaspectratio]{diagramas/purchase_cost_recalculation}}
+	\caption{Secuencia de Abastecimiento de Materia Prima.}
+	\label{fig:seq_abastecimiento}
+\end{figure}
+
+\subsection{Dashboard de Rentabilidad}
+La analítica mensual agrega datos de ventas, producción y mermas para mostrar KPIs accionables (\textit{véase fig. \ref{fig:seq_dashboard}}).
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,keepaspectratio]{diagramas/monthly_profitability}}
+	\caption{Secuencia de Consulta del Dashboard de Rentabilidad.}
+	\label{fig:seq_dashboard}
+\end{figure}
+
+\section{Modelo de Datos}
+El esquema se define mediante ZenStack, integrando las políticas de seguridad directamente en las entidades de \texttt{User}, \texttt{Ingredient}, \texttt{Recipe} y \texttt{ProductionBatch}. La Fig. \ref{fig:clases} detalla las relaciones necesarias para costeo promedio, explosión de materiales y trazabilidad de compras/mermas.
+
+Los puntos clave del modelo son:
+\begin{itemize}
+	\item \textbf{RecipeItem} actúa como tabla puente para registrar cantidades exactas por insumo dentro de cada receta.
+	\item \textbf{ProductionBatch} conserva un \textit{snapshot} del costo calculado en el momento de producir, permitiendo auditorías posteriores.
+	\item \textbf{PurchaseRecord} y \textbf{Waste} alimentan los ajustes de inventario y el cálculo del Costo Promedio Ponderado.
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[height=0.3\textheight,keepaspectratio]{diagramas/Clases}}
+	\caption{Diagrama de Clases extendido con gestión de usuarios y roles.}
+	\label{fig:clases}
+\end{figure}
+\section{Bocetos de Interfaces (Mockups)}
+
+\subsection{[mp-01] Dashboard de Rentabilidad}
+Pantalla de control para usuarios ADMIN con KPIs, comparativas de Ventas vs Producción vs Mermas y tabla de alertas.
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.6\textwidth,keepaspectratio]{mockups/Dashboard}}
+	\\[0.3cm]
+	\fcolorbox{black}{white}{\includegraphics[width=0.6\textwidth,keepaspectratio]{mockups/Dashboard2}}
+	\caption{Dashboard mensual con KPIs y gráficos detallados (mockup combinado).}
+	\label{fig:mock_dashboard}
+\end{figure}
+
+\subsection{[mp-02] Editor de Recetas y Costeo}
+Formulario maestro-detalle para definir fichas técnicas, márgenes en tiempo real y tabla de insumos.
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.75\textwidth,keepaspectratio]{mockups/Recetas}}
+	\caption{Editor de Recetas y Costeo con cálculo dinámico de margen.}
+	\label{fig:mock_recetas}
+\end{figure}
+
+\subsection{[mp-03] Interfaz de Producción y Mermas}
+Flujo unificado para programar lotes y registrar mermas con timeline auditado.
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.75\textwidth,keepaspectratio]{mockups/Mermas_y_produccion}}
+	\caption{Panel dual de Producción y Mermas con acciones rápidas.}
+	\label{fig:mock_mermas}
+\end{figure}
+
+\subsection{Panel de Ventas en Piso}
+Terminal táctil para meseros con mosaico de productos y alertas de stock.
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.75\textwidth,keepaspectratio]{mockups/ventas}}
+	\caption{Panel de Ventas en Piso con decremento inmediato de stock.}
+	\label{fig:mock_ventas}
+\end{figure}
+
+\subsection{Terminal de Abastecimiento}
+Wizard de recepción para recalcular costo promedio ponderado y documentar facturas.
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.75\textwidth,keepaspectratio]{mockups/Abastecimiento1}}
+	\caption{Abastecimiento - Paso 1: datos de factura y proveedor.}
+	\label{fig:mock_abast1}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.75\textwidth,keepaspectratio]{mockups/Abastecimiento2}}
+	\caption{Abastecimiento - Paso 2: selección de insumos y cantidades.}
+	\label{fig:mock_abast2}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.75\textwidth,keepaspectratio]{mockups/Abastecimiento3}}
+	\caption{Abastecimiento - Paso 3: revisión de costos y cálculo WAC.}
+	\label{fig:mock_abast3}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\fcolorbox{black}{white}{\includegraphics[width=0.75\textwidth,keepaspectratio]{mockups/Abastecimiento4}}
+	\caption{Abastecimiento - Paso 4: confirmación y alerta de stock actualizado.}
+	\label{fig:mock_abast4}
+\end{figure}
+
+\end{document}
+
+% =====================================================
+% ANEXO: Diferencias entre la propuesta y la implementación
+% =====================================================
+\clearpage
+\section*{Anexo: Diferencias entre la propuesta y la implementación}
+\addcontentsline{toc}{section}{Anexo: Diferencias entre la propuesta y la implementación}
+
+\subsection*{Resumen ejecutivo}
+En esta sección se documentan las desviaciones relevantes entre la propuesta original y la
+implementaci\'on actual del proyecto KitchenFlow, la justificaci\'on de cada cambio y las
+recomendaciones pendientes para alinear completamente la implementaci\'on con la propuesta.
+
+\subsection*{Cambios principales}
+\begin{itemize}
+  \item \textbf{Stack y Arquitectura:} Propuesta original: Hono + ZenStack/Prisma + PostgreSQL.
+	  Implementaci\'on: Express + Mongoose + MongoDB + OpenAPI. Justificaci\'on: se prioriz\'o
+	  rapidez de desarrollo y despliegue con tecnolog\'ias ya disponibles en el equipo. Se
+	  mantiene integridad de tipos mediante OpenAPI en lugar de Zod/ZenStack.
+
+  \item \textbf{Autenticaci\'on y RBAC:} La propuesta planteaba pol\'iticas declarativas (ZenStack).
+	  En la implementaci\'on se usa JWT firmado con helper propio y verificaciones en middleware
+	  y controladores. Estado: funcional (roles ADMIN/KITCHEN/FLOOR presentes).
+
+  \item \textbf{Costeo (WAC) y Abastecimiento:} El c\'alculo de Costo Promedio Ponderado (WAC)
+	  est\'a implementado en el endpoint de compras (`/api/purchase-records`) y actualiza
+	  `averageCost` y stock del insumo. Falta: factor de conversi\'on de unidades (p.ej. kg→g).
+
+  \item \textbf{Explosi\'on de materiales y Producci\'on:} El flujo de producci\'on (reserva,
+	  inicio, completado, cancelaci\'on) est\'a implementado en `production-batches`. Sin
+	  embargo, no se usan transacciones at\'omicas de BD (riesgo de condiciones de carrera en
+	  concurrencia alta).
+
+  \item \textbf{Mermas y Ventas:} Registro de mermas y decremento de stock por ventas implementado
+	  y visible en el dashboard anal\'itico.
+
+  \item \textbf{Contratos y Cliente:} En lugar de compartir esquemas Zod, la integraci\'on se hizo
+	  mediante OpenAPI y cliente generado (`frontend/src/app/api/schema.d.ts` y `client.ts`).
+
+  \item \textbf{Mockups y Diagramas:} Todos los activos y el template LaTeX de la propuesta se
+	  conservaron y se copiaron a `report/propuesta` para generar el reporte entregable.
+\end{itemize}
+
+\subsection*{Elementos no implementados o parciales}
+\begin{itemize}
+  \item \textbf{Transacciones at\'omicas en operaciones de producci\'on/compra:} Parcial — las
+	  operaciones realizan varias escrituras por documento pero no usan sesiones/transactions de
+	  MongoDB; se recomienda activarlas si se espera concurrencia.
+
+  \item \textbf{Conversi\'on de unidades:} No implementada — si la operaci\'on maneja unidades de
+	  compra distintas a las de consumo (bultos vs gramos) conviene añadir campos y reglas de
+	  conversi\'on.
+
+  \item \textbf{Pol\'iticas declarativas (ZenStack):} No implementadas — las reglas de negocio y
+	  control de acceso est\'an codificadas manualmente.
+
+  \item \textbf{Pruebas automatizadas:} Faltan tests unitarios e integraci\'on cr\'iticos.
+\end{itemize}
+
+\subsection*{Recomendaciones}
+\begin{enumerate}
+  \item Implementar transacciones de MongoDB en los endpoints cr\'iticos (`/api/production-batches`,
+	  `/api/purchase-records`) para garantizar atomicidad en la reserva y consumos de stock.
+  \item Añadir soporte de conversi\'on de unidades en `Ingredient`/`Recipe` y en el editor de
+	  recetas para evitar errores de costeo cuando las compras vienen en unidades diferentes.
+  \item Añadir pruebas autom\'aticas (tests) que cubran login, WAC, creaci\'on/completado de lote
+	  y flujo de ventas.
+  \item Documentar en el README la desviaci\'on de stack (por qu\'e se cambi\'o a Mongo/Express)
+	  y los pasos para migrar a la stack original si fuera necesario.
+\end{enumerate}
+
+\subsection*{Estado del reporte}
+El repositorio contiene ahora una copia completa de la propuesta en `report/propuesta` incluyendo
+el PDF original y los activos; el present e archivo LaTeX se actualiz\'o con este anexo para que el
+reporte compile con la informaci\'on de desviaciones y recomendaciones.
+
