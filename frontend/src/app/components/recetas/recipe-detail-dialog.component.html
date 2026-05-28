@@ -85,13 +85,15 @@
             <div class="metric-card editable-metric">
               <span class="metric-label">Precio de Venta (MXN)</span>
               <div class="metric-input-wrapper">
-                <span class="currency-symbol">MXN</span>
                 <input
+                  z-input
                   type="number"
                   [formControl]="form.controls.salePrice"
+                  zSize="lg"
                   class="sale-price-input"
                   min="0.01"
                   step="0.5"
+                  placeholder="Ej. 129.00"
                 />
               </div>
             </div>

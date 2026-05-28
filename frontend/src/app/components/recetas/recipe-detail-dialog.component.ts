@@ -12,6 +12,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -19,9 +20,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { startWith } from 'rxjs';
 import { ZardBadgeComponent } from '../../shared/components/badge';
 import { ZardButtonComponent } from '../../shared/components/button';
 import { ZardCardComponent } from '../../shared/components/card';
+import { ZardInputDirective } from '../../shared/components/input';
 import { ZardTableImports } from '../../shared/components/table';
 import { MxnCurrencyPipe } from '../../shared/pipes/mxn-currency.pipe';
 import { Recipe, RecipePayload } from '../../interfaces/recipe';
@@ -43,6 +46,7 @@ type IngredientRowForm = FormGroup<{
     ZardCardComponent,
     ZardButtonComponent,
     ZardBadgeComponent,
+    ZardInputDirective,
     ...ZardTableImports,
     MxnCurrencyPipe,
   ],
@@ -69,8 +73,13 @@ export class RecipeDetailDialogComponent implements OnInit, AfterViewInit {
     ingredients: this.fb.array([this.createIngredientRow()]),
   });
 
+  readonly formValue = toSignal(this.form.valueChanges.pipe(startWith(this.form.getRawValue())), {
+    initialValue: this.form.getRawValue(),
+  });
+
   readonly summary = computed(() => {
-    const salePrice = Number(this.form.controls.salePrice.value) || 0;
+    const currentForm = this.formValue();
+    const salePrice = Number(currentForm.salePrice) || 0;
     const ingredients = this.form.controls.ingredients.controls;
     const totalCost = this.calculateTotalCost(ingredients);
     const margin = salePrice > 0 ? Math.round(((salePrice - totalCost) / salePrice) * 100 * 10) / 10 : 0;
