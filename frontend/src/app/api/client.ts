@@ -5,15 +5,15 @@ const getAccessToken = () => localStorage.getItem('kitchenflow_access_token');
 
 const getApiBaseUrl = () => {
   if (typeof window === 'undefined') {
-    return '/api';
+    return '';
   }
 
   const { hostname } = window.location;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    return '/api';
+    return '';
   }
 
-  return '/awe/api';
+  return '/awe';
 };
 
 const authFetch = ((input: RequestInfo | URL, init?: RequestInit) => {
@@ -41,5 +41,4 @@ const authFetch = ((input: RequestInfo | URL, init?: RequestInit) => {
 export const apiClient = createClient<paths>({
   baseUrl: getApiBaseUrl(),
   fetch: authFetch,
-  pathSerializer: (path) => path.replace(/^(\/(?:awe\/)?api)\/api\//, '$1/'),
 });
