@@ -7,8 +7,8 @@ const openapiDocument = {
   },
   servers: [
     {
-      url: 'http://localhost:3010',
-      description: 'Servidor local',
+      url: '/',
+      description: 'Mismo origen',
     },
   ],
   tags: [

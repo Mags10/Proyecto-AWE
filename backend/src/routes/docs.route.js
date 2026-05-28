@@ -23,7 +23,7 @@ routes.get('/docs', (req, res) => {
         <script>
           window.onload = () => {
             window.ui = SwaggerUIBundle({
-              url: '/api/openapi.json',
+              url: 'openapi.json',
               dom_id: '#swagger-ui'
             });
           };
