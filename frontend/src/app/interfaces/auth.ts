@@ -7,6 +7,12 @@ export interface AuthUser {
   role: UserRole;
 }
 
+export interface ManagedUser extends AuthUser {
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface LoginResponse {
   accessToken: string;
   tokenType: 'Bearer';
@@ -22,5 +28,34 @@ export interface MeResponse {
 
 export interface LoginPayload {
   email: string;
+  password: string;
+}
+
+export interface UsersResponse {
+  users: ManagedUser[];
+  timestamp: string;
+}
+
+export interface UserMutationResponse {
+  user: ManagedUser;
+  timestamp: string;
+}
+
+export interface CreateUserPayload {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  active: boolean;
+}
+
+export interface UpdateUserPayload {
+  name: string;
+  email: string;
+  role: UserRole;
+  active: boolean;
+}
+
+export interface ResetUserPasswordPayload {
   password: string;
 }

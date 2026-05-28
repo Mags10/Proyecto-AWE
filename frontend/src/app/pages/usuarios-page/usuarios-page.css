@@ -1,0 +1,274 @@
+/* Contenedor general */
+.page-shell {
+  padding: 1.5rem;
+  background: var(--page-bg);
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cabecera Hero */
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.25rem;
+}
+
+.hero-copy {
+  max-width: 700px;
+}
+
+.hero-eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 2.85rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+.hero-subtitle {
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+}
+
+.btn-new-user {
+  box-shadow: 0 4px 12px rgba(124, 74, 45, 0.15) !important;
+  transition: all 150ms ease !important;
+}
+
+.btn-new-user:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 18px rgba(124, 74, 45, 0.22) !important;
+}
+
+/* Banners de Notificación */
+.success-banner,
+.error-banner {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.success-banner {
+  background: #f0fdf4;
+  border: 1px solid #dcfce7;
+  color: #166534;
+}
+
+.error-banner {
+  background: #fdf2f2;
+  border: 1px solid #fee2e2;
+  color: #a64141;
+}
+
+/* Barra de Herramientas */
+.toolbar {
+  width: 100%;
+}
+
+.search-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: 420px;
+}
+
+.search-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #5a4b3d;
+}
+
+.search-input {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.01) !important;
+  width: 100% !important;
+}
+
+.search-input:focus {
+  transform: translateY(-0.5px);
+}
+
+/* Rejilla de KPIs */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.kpi-value {
+  display: block;
+  font-size: 2.2rem;
+  color: var(--ink);
+  font-family: Georgia, serif;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.kpi-caption {
+  display: block;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.4;
+}
+
+/* Tabla Catálogo */
+.catalog-card {
+  box-shadow: 0 4px 18px rgba(38, 26, 16, 0.03) !important;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.catalog-table {
+  border-collapse: collapse;
+}
+
+.recipe-row {
+  transition: background-color 150ms ease;
+}
+
+.recipe-row:hover {
+  background-color: var(--surface-soft);
+}
+
+.identity-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.user-name {
+  font-size: 1rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.user-email {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.self-tag {
+  display: inline-block;
+  width: fit-content;
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 0.08rem 0.45rem;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
+.font-georgia {
+  font-family: Georgia, serif;
+}
+
+.cell-action {
+  text-align: right;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.btn-view-detail {
+  font-size: 0.85rem !important;
+  min-height: 32px !important;
+  padding: 0.25rem 0.75rem !important;
+}
+
+/* Configuración de anchos de columna */
+.col-identity {
+  width: 40%;
+}
+.col-role {
+  width: 18%;
+}
+.col-status {
+  width: 15%;
+}
+.col-date {
+  width: 15%;
+}
+.col-actions {
+  width: 12%;
+}
+
+/* Celda vacía */
+.empty-cell {
+  padding: 3rem 1rem !important;
+  text-align: center;
+}
+
+.empty-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.empty-icon {
+  font-size: 2.25rem;
+}
+
+.empty-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Media Queries */
+@media (max-width: 980px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .hero h1 {
+    font-size: 2.3rem;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .row-actions {
+    justify-content: flex-start;
+  }
+}

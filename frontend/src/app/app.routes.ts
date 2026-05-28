@@ -17,6 +17,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard-page/dashboard-page').then((m) => m.DashboardPage),
   },
   {
+    path: 'usuarios',
+    title: 'Gestión de Usuarios - KitchenFlow',
+    canActivate: [authGuard],
+    data: { roles: ['ADMIN'] },
+    loadComponent: () => import('./pages/usuarios-page/usuarios-page').then((m) => m.UsuariosPage),
+  },
+  {
     path: 'recetas',
     title: 'Catálogo de Recetas - KitchenFlow',
     canActivate: [authGuard],

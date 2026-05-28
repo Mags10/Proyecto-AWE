@@ -28,6 +28,7 @@ export class AuthService {
     if (role === 'ADMIN') {
       return [
         { label: 'Dashboard', path: '/dashboard' },
+        { label: 'Usuarios', path: '/usuarios' },
         { label: 'Recetas', path: '/recetas' },
         { label: 'Producción', path: '/produccion' },
         { label: 'Abastecimiento', path: '/abastecimiento' },

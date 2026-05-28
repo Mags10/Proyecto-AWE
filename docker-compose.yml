@@ -3,14 +3,14 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
+    env_file:
+      - .env
     volumes:
       - .:/app
       - backend_node_modules:/app/node_modules
       - backend_workspace_node_modules:/app/backend/node_modules
     ports:
       - '3010:3000'
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/monorepo
     depends_on:
       - mongo
 
@@ -29,6 +29,8 @@ services:
 
   mongo:
     image: mongo:6
+    ports:
+      - '27017:27017'
     volumes:
       - mongo_data:/data/db
 

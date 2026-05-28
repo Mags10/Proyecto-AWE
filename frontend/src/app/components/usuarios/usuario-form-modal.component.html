@@ -1,0 +1,52 @@
+<section class="modal-backdrop" role="presentation" (click)="close()" (keydown.escape)="close()">
+  <z-card
+    #dialogSurface
+    class="modal-card"
+    [zTitle]="editing() ? 'Editar usuario' : 'Nuevo usuario'"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="editing() ? 'Editar usuario' : 'Nuevo usuario'"
+    tabindex="-1"
+    (click)="$event.stopPropagation()"
+  >
+    <form class="modal-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <label>
+        Nombre
+        <input z-input formControlName="name" placeholder="Equipo de caja" />
+      </label>
+      <label>
+        Correo
+        <input z-input type="email" formControlName="email" placeholder="usuario@kitchenflow.local" />
+      </label>
+      <label>
+        Rol
+        <select class="user-select" formControlName="role">
+          @for (role of roleOptions; track role.value) {
+            <option [value]="role.value">{{ role.label }}</option>
+          }
+        </select>
+      </label>
+      <label class="checkbox-field">
+        <input type="checkbox" formControlName="active" />
+        <span>Usuario activo</span>
+      </label>
+      @if (!editing()) {
+        <label>
+          Contraseña inicial
+          <input z-input type="password" formControlName="password" placeholder="Mínimo 8 caracteres" />
+        </label>
+      }
+
+      @if (error()) {
+        <div class="modal-error">{{ error() }}</div>
+      }
+
+      <footer class="modal-actions">
+        <button z-button zType="outline" type="button" (click)="close()">Cancelar</button>
+        <button z-button type="submit" [zLoading]="saving()">
+          {{ editing() ? 'Guardar cambios' : 'Crear usuario' }}
+        </button>
+      </footer>
+    </form>
+  </z-card>
+</section>

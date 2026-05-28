@@ -1,0 +1,21 @@
+flowchart TB
+    DEV["Entorno de desarrollo / despliegue"]
+
+    subgraph COMPOSE["docker-compose"]
+        FE["frontend\nAngular + hot reload"]
+        BE["backend\nExpress + nodemon"]
+        DB["mongo\nPersistencia"]
+    end
+
+    USER["Usuario / navegador"] --> FE
+    FE -->|HTTP /api| BE
+    BE --> DB
+    DEV --> COMPOSE
+
+    classDef shell fill:#fff7ed,stroke:#ea580c,color:#7c2d12,stroke-width:2px;
+    classDef app fill:#eef2ff,stroke:#4f46e5,color:#312e81,stroke-width:2px;
+    classDef data fill:#ecfdf5,stroke:#16a34a,color:#14532d,stroke-width:2px;
+
+    class DEV,USER shell;
+    class FE,BE app;
+    class DB data;

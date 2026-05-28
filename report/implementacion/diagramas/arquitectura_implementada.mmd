@@ -1,0 +1,31 @@
+flowchart LR
+    subgraph UI["Frontend Angular 21"]
+        A["Rutas lazy + guards por rol"]
+        B["Servicios tipados desde OpenAPI"]
+        C["Pantallas: abastecimiento, recetas, producción, ventas, dashboard, usuarios"]
+    end
+
+    subgraph API["Backend Express"]
+        D["JWT + middleware RBAC"]
+        E["Controladores de dominio"]
+        F["OpenAPI como contrato"]
+    end
+
+    subgraph DATA["Persistencia"]
+        G["Modelos Mongoose"]
+        H["MongoDB"]
+    end
+
+    A --> B --> C
+    C --> D
+    D --> E
+    E --> F
+    E --> G --> H
+
+    classDef ui fill:#eff6ff,stroke:#2563eb,color:#1e3a8a,stroke-width:2px;
+    classDef api fill:#f5f3ff,stroke:#7c3aed,color:#4c1d95,stroke-width:2px;
+    classDef data fill:#ecfeff,stroke:#0891b2,color:#164e63,stroke-width:2px;
+
+    class A,B,C ui;
+    class D,E,F api;
+    class G,H data;

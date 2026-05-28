@@ -21,6 +21,10 @@ const openapiDocument = {
       description: 'Autenticación y sesión',
     },
     {
+      name: 'Users',
+      description: 'Gestión de usuarios y roles',
+    },
+    {
       name: 'Ingredients',
       description: 'Inventario de insumos',
     },
@@ -106,6 +110,117 @@ const openapiDocument = {
             },
           },
           401: { $ref: '#/components/responses/Unauthorized' },
+          500: { $ref: '#/components/responses/InternalServerError' },
+        },
+      },
+    },
+    '/api/users': {
+      get: {
+        tags: ['Users'],
+        summary: 'Lista usuarios del sistema',
+        security: [{ bearerAuth: [] }],
+        responses: {
+          200: {
+            description: 'Usuarios encontrados',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/UsersResponse' },
+              },
+            },
+          },
+          401: { $ref: '#/components/responses/Unauthorized' },
+          403: { $ref: '#/components/responses/Forbidden' },
+          500: { $ref: '#/components/responses/InternalServerError' },
+        },
+      },
+      post: {
+        tags: ['Users'],
+        summary: 'Crea un usuario',
+        security: [{ bearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/CreateUserInput' },
+            },
+          },
+        },
+        responses: {
+          201: {
+            description: 'Usuario creado',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/UserMutationResponse' },
+              },
+            },
+          },
+          400: { $ref: '#/components/responses/BadRequest' },
+          401: { $ref: '#/components/responses/Unauthorized' },
+          403: { $ref: '#/components/responses/Forbidden' },
+          409: { $ref: '#/components/responses/Conflict' },
+          500: { $ref: '#/components/responses/InternalServerError' },
+        },
+      },
+    },
+    '/api/users/{id}': {
+      put: {
+        tags: ['Users'],
+        summary: 'Actualiza nombre, correo, rol o estado de un usuario',
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: '#/components/parameters/ObjectId' }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/UpdateUserInput' },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Usuario actualizado',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/UserMutationResponse' },
+              },
+            },
+          },
+          400: { $ref: '#/components/responses/BadRequest' },
+          401: { $ref: '#/components/responses/Unauthorized' },
+          403: { $ref: '#/components/responses/Forbidden' },
+          404: { $ref: '#/components/responses/NotFound' },
+          409: { $ref: '#/components/responses/Conflict' },
+          500: { $ref: '#/components/responses/InternalServerError' },
+        },
+      },
+    },
+    '/api/users/{id}/reset-password': {
+      post: {
+        tags: ['Users'],
+        summary: 'Restablece la contraseña de un usuario',
+        security: [{ bearerAuth: [] }],
+        parameters: [{ $ref: '#/components/parameters/ObjectId' }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: { $ref: '#/components/schemas/ResetUserPasswordInput' },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: 'Contraseña actualizada',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/UserPasswordResetResponse' },
+              },
+            },
+          },
+          400: { $ref: '#/components/responses/BadRequest' },
+          401: { $ref: '#/components/responses/Unauthorized' },
+          403: { $ref: '#/components/responses/Forbidden' },
+          404: { $ref: '#/components/responses/NotFound' },
           500: { $ref: '#/components/responses/InternalServerError' },
         },
       },
@@ -734,6 +849,22 @@ const openapiDocument = {
           },
         },
       },
+      Forbidden: {
+        description: 'No autorizado para esta acción',
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/MessageResponse' },
+          },
+        },
+      },
+      Conflict: {
+        description: 'Conflicto de negocio o duplicidad',
+        content: {
+          'application/json': {
+            schema: { $ref: '#/components/schemas/MessageResponse' },
+          },
+        },
+      },
       InternalServerError: {
         description: 'Error interno del servidor',
         content: {
@@ -771,6 +902,20 @@ const openapiDocument = {
           role: { type: 'string', enum: ['ADMIN', 'KITCHEN', 'FLOOR'] },
         },
       },
+      ManagedUser: {
+        allOf: [
+          { $ref: '#/components/schemas/AuthUser' },
+          {
+            type: 'object',
+            required: ['active', 'createdAt', 'updatedAt'],
+            properties: {
+              active: { type: 'boolean', example: true },
+              createdAt: { type: 'string', format: 'date-time' },
+              updatedAt: { type: 'string', format: 'date-time' },
+            },
+          },
+        ],
+      },
       LoginInput: {
         type: 'object',
         required: ['email', 'password'],
@@ -795,6 +940,62 @@ const openapiDocument = {
         required: ['user', 'timestamp'],
         properties: {
           user: { $ref: '#/components/schemas/AuthUser' },
+          timestamp: { type: 'string', format: 'date-time' },
+        },
+      },
+      UsersResponse: {
+        type: 'object',
+        required: ['users', 'timestamp'],
+        properties: {
+          users: {
+            type: 'array',
+            items: { $ref: '#/components/schemas/ManagedUser' },
+          },
+          timestamp: { type: 'string', format: 'date-time' },
+        },
+      },
+      CreateUserInput: {
+        type: 'object',
+        required: ['name', 'email', 'password', 'role', 'active'],
+        properties: {
+          name: { type: 'string', example: 'Turno Vespertino' },
+          email: { type: 'string', format: 'email', example: 'tarde@kitchenflow.local' },
+          password: { type: 'string', minLength: 8, example: 'Temporal123!' },
+          role: { type: 'string', enum: ['ADMIN', 'KITCHEN', 'FLOOR'] },
+          active: { type: 'boolean', example: true },
+        },
+      },
+      UpdateUserInput: {
+        type: 'object',
+        required: ['name', 'email', 'role', 'active'],
+        properties: {
+          name: { type: 'string', example: 'Turno Vespertino' },
+          email: { type: 'string', format: 'email', example: 'tarde@kitchenflow.local' },
+          role: { type: 'string', enum: ['ADMIN', 'KITCHEN', 'FLOOR'] },
+          active: { type: 'boolean', example: true },
+        },
+      },
+      ResetUserPasswordInput: {
+        type: 'object',
+        required: ['password'],
+        properties: {
+          password: { type: 'string', minLength: 8, example: 'Temporal123!' },
+        },
+      },
+      UserMutationResponse: {
+        type: 'object',
+        required: ['user', 'timestamp'],
+        properties: {
+          user: { $ref: '#/components/schemas/ManagedUser' },
+          timestamp: { type: 'string', format: 'date-time' },
+        },
+      },
+      UserPasswordResetResponse: {
+        type: 'object',
+        required: ['user', 'message', 'timestamp'],
+        properties: {
+          user: { $ref: '#/components/schemas/AuthUser' },
+          message: { type: 'string', example: 'Contraseña actualizada' },
           timestamp: { type: 'string', format: 'date-time' },
         },
       },

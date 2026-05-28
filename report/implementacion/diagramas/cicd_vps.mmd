@@ -1,0 +1,24 @@
+flowchart TB
+    GIT["Push al repositorio"] --> GA["GitHub Actions"]
+    GA --> RUNNER["Runner self-hosted"]
+    RUNNER --> VPS["VPS propio"]
+
+    subgraph VPSFLOW["Ejecución en VPS"]
+        CHECKOUT["Checkout del proyecto"]
+        BUILD["docker compose up -d --build"]
+        HEALTH["Health checks de frontend y backend"]
+    end
+
+    VPS --> CHECKOUT --> BUILD --> HEALTH
+
+    HEALTH --> LIVE["Sistema actualizado en el servidor"]
+
+    classDef source fill:#fff7ed,stroke:#ea580c,color:#7c2d12,stroke-width:2px;
+    classDef ci fill:#eff6ff,stroke:#2563eb,color:#1d4ed8,stroke-width:2px;
+    classDef infra fill:#f5f3ff,stroke:#7c3aed,color:#5b21b6,stroke-width:2px;
+    classDef deploy fill:#ecfdf5,stroke:#16a34a,color:#166534,stroke-width:2px;
+
+    class GIT source;
+    class GA,RUNNER ci;
+    class VPS,CHECKOUT,BUILD,HEALTH infra;
+    class LIVE deploy;

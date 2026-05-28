@@ -9,7 +9,9 @@
     "lint": "eslint src scripts --ext .js",
     "lint:fix": "eslint src scripts --ext .js --fix",
     "format": "prettier src scripts --write",
-    "seed:supply": "node scripts/seed-supply.js"
+    "seed:supply": "node scripts/seed-supply.js",
+    "seed:activity": "node scripts/seed-activity.js",
+    "verify:roles": "node scripts/verify-role-flows.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

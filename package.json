@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "api:types": "node scripts/generate-api-types.js",
-    "seed:supply": "npm run seed:supply --workspace backend",
+    "seed:supply": "npm run seed:supply --workspace backend --",
+    "seed:activity": "npm run seed:activity --workspace backend --",
+    "verify:roles": "npm run verify:roles --workspace backend --",
     "start": "docker-compose up --build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

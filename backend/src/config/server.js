@@ -27,6 +27,7 @@ class Server {
       this.app.use(apiBasePath, require('../routes/docs.route'));
       this.app.use(`${apiBasePath}/status`, require('../routes/status.route'));
       this.app.use(`${apiBasePath}/auth`, require('../routes/auth.route'));
+      this.app.use(`${apiBasePath}/users`, require('../routes/users.route'));
       this.app.use(`${apiBasePath}/ingredients`, require('../routes/ingredients.route'));
       this.app.use(`${apiBasePath}/purchase-records`, require('../routes/purchase-records.route'));
       this.app.use(`${apiBasePath}/recipes`, require('../routes/recipes.route'));

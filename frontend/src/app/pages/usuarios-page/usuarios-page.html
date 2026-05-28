@@ -1,0 +1,134 @@
+<section class="page-shell">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="hero-eyebrow">Administración</p>
+      <h1>Usuarios</h1>
+      <p class="hero-subtitle">Controla accesos, roles operativos y credenciales del equipo.</p>
+    </div>
+
+    <div class="hero-actions">
+      <button z-button class="btn-new-user" type="button" (click)="openCreate()">Nuevo usuario</button>
+    </div>
+  </section>
+
+  @if (success()) {
+    <div class="success-banner">{{ success() }}</div>
+  }
+
+  @if (error()) {
+    <div class="error-banner">{{ error() }}</div>
+  }
+
+  <section class="kpi-grid">
+    <z-card zTitle="Usuarios activos">
+      <strong class="kpi-value">{{ activeUsers() }}</strong>
+      <span class="kpi-caption">Con acceso vigente al sistema</span>
+    </z-card>
+    <z-card zTitle="Administradores">
+      <strong class="kpi-value">{{ adminUsers() }}</strong>
+      <span class="kpi-caption">Responsables de configuración y control</span>
+    </z-card>
+    <z-card zTitle="Inactivos">
+      <strong class="kpi-value">{{ inactiveUsers() }}</strong>
+      <span class="kpi-caption">Usuarios bloqueados o fuera de operación</span>
+    </z-card>
+  </section>
+
+  <section class="toolbar">
+    <div class="search-box">
+      <span class="search-label">Buscar usuario</span>
+      <input
+        z-input
+        class="search-input"
+        [value]="query()"
+        (input)="updateQuery(($any($event.target)).value)"
+        placeholder="Escribe nombre, correo o rol..."
+      />
+    </div>
+  </section>
+
+  <z-card class="catalog-card" zTitle="Equipo registrado" zDescription="Alta, edición de rol y control de acceso operativo.">
+    <div class="table-wrap">
+      <table class="catalog-table" z-table>
+        <thead z-table-header>
+          <tr z-table-row>
+            <th z-table-head class="col-identity">Usuario</th>
+            <th z-table-head class="col-role">Rol</th>
+            <th z-table-head class="col-status">Estado</th>
+            <th z-table-head class="col-date">Alta</th>
+            <th z-table-head class="col-actions">Acciones</th>
+          </tr>
+        </thead>
+        <tbody z-table-body>
+          @for (user of filteredUsers(); track user._id) {
+            <tr z-table-row class="recipe-row">
+              <td z-table-cell>
+                <div class="identity-cell">
+                  <strong class="user-name">{{ user.name }}</strong>
+                  <span class="user-email">{{ user.email }}</span>
+                  @if (isCurrentUser(user)) {
+                    <span class="self-tag">Tu sesión actual</span>
+                  }
+                </div>
+              </td>
+              <td z-table-cell>
+                <z-badge [zType]="getRoleBadge(user.role)">{{ getRoleLabel(user.role) }}</z-badge>
+              </td>
+              <td z-table-cell>
+                <z-badge [zType]="user.active ? 'secondary' : 'destructive'">
+                  {{ user.active ? 'Activo' : 'Inactivo' }}
+                </z-badge>
+              </td>
+              <td z-table-cell class="font-georgia">{{ user.createdAt | date: 'yyyy-MM-dd' }}</td>
+              <td z-table-cell class="cell-action">
+                <div class="row-actions">
+                  <button z-button zType="outline" zSize="sm" class="btn-view-detail" type="button" (click)="openEdit(user)">
+                    Editar
+                  </button>
+                  <button z-button zType="outline" zSize="sm" class="btn-view-detail" type="button" (click)="openPassword(user)">
+                    Contraseña
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr z-table-row>
+              <td z-table-cell colspan="5" class="empty-cell">
+                <div class="empty-state-container">
+                  <span class="empty-icon">👥</span>
+                  <p class="empty-text">
+                    @if (loading()) {
+                      Cargando lista de usuarios...
+                    } @else {
+                      No se encontraron usuarios registrados.
+                    }
+                  </p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </z-card>
+</section>
+
+@if (formModalOpen()) {
+  <app-usuario-form-modal
+    [user]="selectedUser()"
+    [saving]="loading()"
+    [error]="error()"
+    (closed)="closeFormModal()"
+    (submitted)="submitForm($event)"
+  />
+}
+
+@if (passwordModalOpen() && selectedUser()) {
+  <app-usuario-password-modal
+    [user]="selectedUser()!"
+    [saving]="loading()"
+    [error]="error()"
+    (closed)="closePasswordModal()"
+    (submitted)="submitPassword($event)"
+  />
+}

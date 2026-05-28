@@ -121,6 +121,171 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista usuarios del sistema */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Usuarios encontrados */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UsersResponse"];
+                    };
+                };
+                401: components["responses"]["Unauthorized"];
+                403: components["responses"]["Forbidden"];
+                500: components["responses"]["InternalServerError"];
+            };
+        };
+        put?: never;
+        /** Crea un usuario */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateUserInput"];
+                };
+            };
+            responses: {
+                /** @description Usuario creado */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserMutationResponse"];
+                    };
+                };
+                400: components["responses"]["BadRequest"];
+                401: components["responses"]["Unauthorized"];
+                403: components["responses"]["Forbidden"];
+                409: components["responses"]["Conflict"];
+                500: components["responses"]["InternalServerError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Actualiza nombre, correo, rol o estado de un usuario */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description ObjectId de MongoDB */
+                    id: components["parameters"]["ObjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateUserInput"];
+                };
+            };
+            responses: {
+                /** @description Usuario actualizado */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserMutationResponse"];
+                    };
+                };
+                400: components["responses"]["BadRequest"];
+                401: components["responses"]["Unauthorized"];
+                403: components["responses"]["Forbidden"];
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["Conflict"];
+                500: components["responses"]["InternalServerError"];
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/{id}/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restablece la contraseña de un usuario */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description ObjectId de MongoDB */
+                    id: components["parameters"]["ObjectId"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ResetUserPasswordInput"];
+                };
+            };
+            responses: {
+                /** @description Contraseña actualizada */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserPasswordResetResponse"];
+                    };
+                };
+                400: components["responses"]["BadRequest"];
+                401: components["responses"]["Unauthorized"];
+                403: components["responses"]["Forbidden"];
+                404: components["responses"]["NotFound"];
+                500: components["responses"]["InternalServerError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/ingredients": {
         parameters: {
             query?: never;
@@ -872,6 +1037,14 @@ export interface components {
             /** @enum {string} */
             role: "ADMIN" | "KITCHEN" | "FLOOR";
         };
+        ManagedUser: components["schemas"]["AuthUser"] & {
+            /** @example true */
+            active: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         LoginInput: {
             /**
              * Format: email
@@ -893,6 +1066,55 @@ export interface components {
         };
         MeResponse: {
             user: components["schemas"]["AuthUser"];
+            /** Format: date-time */
+            timestamp: string;
+        };
+        UsersResponse: {
+            users: components["schemas"]["ManagedUser"][];
+            /** Format: date-time */
+            timestamp: string;
+        };
+        CreateUserInput: {
+            /** @example Turno Vespertino */
+            name: string;
+            /**
+             * Format: email
+             * @example tarde@kitchenflow.local
+             */
+            email: string;
+            /** @example Temporal123! */
+            password: string;
+            /** @enum {string} */
+            role: "ADMIN" | "KITCHEN" | "FLOOR";
+            /** @example true */
+            active: boolean;
+        };
+        UpdateUserInput: {
+            /** @example Turno Vespertino */
+            name: string;
+            /**
+             * Format: email
+             * @example tarde@kitchenflow.local
+             */
+            email: string;
+            /** @enum {string} */
+            role: "ADMIN" | "KITCHEN" | "FLOOR";
+            /** @example true */
+            active: boolean;
+        };
+        ResetUserPasswordInput: {
+            /** @example Temporal123! */
+            password: string;
+        };
+        UserMutationResponse: {
+            user: components["schemas"]["ManagedUser"];
+            /** Format: date-time */
+            timestamp: string;
+        };
+        UserPasswordResetResponse: {
+            user: components["schemas"]["AuthUser"];
+            /** @example Contraseña actualizada */
+            message: string;
             /** Format: date-time */
             timestamp: string;
         };
@@ -1386,6 +1608,24 @@ export interface components {
         };
         /** @description No autenticado o token inválido */
         Unauthorized: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["MessageResponse"];
+            };
+        };
+        /** @description No autorizado para esta acción */
+        Forbidden: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["MessageResponse"];
+            };
+        };
+        /** @description Conflicto de negocio o duplicidad */
+        Conflict: {
             headers: {
                 [name: string]: unknown;
             };
