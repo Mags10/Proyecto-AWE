@@ -6,13 +6,18 @@ const routes = Router();
 const buildOpenapiDocument = (req) => {
   const baseUrl = String(req.baseUrl || '');
   const appBasePath = baseUrl.endsWith('/api') ? baseUrl.slice(0, -4) : '';
+  const publicBasePath = String(process.env.PUBLIC_API_BASE_PATH || '').trim();
+  const normalizedPublicBasePath = publicBasePath
+    ? `/${publicBasePath.replace(/^\/+/, '').replace(/\/+$/, '')}`
+    : '';
+  const serverPath = normalizedPublicBasePath || appBasePath || '/';
 
   return {
     ...openapiDocument,
     servers: [
       {
-        url: appBasePath || '/',
-        description: appBasePath ? 'Origen desplegado' : 'Origen local',
+        url: serverPath,
+        description: normalizedPublicBasePath || appBasePath ? 'Origen desplegado' : 'Origen local',
       },
     ],
   };
