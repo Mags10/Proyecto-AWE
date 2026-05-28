@@ -3,8 +3,9 @@ const openapiDocument = require('../docs/openapi');
 
 const routes = Router();
 
-const buildOpenapiDocument = (baseUrl = '') => {
-  const appBasePath = String(baseUrl).endsWith('/api') ? String(baseUrl).slice(0, -4) : '';
+const buildOpenapiDocument = (req) => {
+  const baseUrl = String(req.baseUrl || '');
+  const appBasePath = baseUrl.endsWith('/api') ? baseUrl.slice(0, -4) : '';
 
   return {
     ...openapiDocument,
@@ -18,7 +19,7 @@ const buildOpenapiDocument = (baseUrl = '') => {
 };
 
 routes.get('/openapi.json', (req, res) => {
-  res.status(200).json(buildOpenapiDocument(req.baseUrl));
+  res.status(200).json(buildOpenapiDocument(req));
 });
 
 routes.get('/docs', (req, res) => {
