@@ -9,14 +9,7 @@ class Server {
     this.app = express();
     this.port = process.env.PORT || 3000;
 
-    this.statusPath = '/api/status';
-    this.authPath = '/api/auth';
-    this.ingredientsPath = '/api/ingredients';
-    this.purchaseRecordsPath = '/api/purchase-records';
-    this.recipesPath = '/api/recipes';
-    this.productionBatchesPath = '/api/production-batches';
-    this.salesPath = '/api/sales';
-    this.analyticsPath = '/api/analytics';
+    this.apiBasePaths = ['/api', '/awe/api'];
 
     this.middlewares();
     this.routes();
@@ -30,15 +23,17 @@ class Server {
   }
 
   routes() {
-    this.app.use('/api', require('../routes/docs.route'));
-    this.app.use(this.statusPath, require('../routes/status.route'));
-    this.app.use(this.authPath, require('../routes/auth.route'));
-    this.app.use(this.ingredientsPath, require('../routes/ingredients.route'));
-    this.app.use(this.purchaseRecordsPath, require('../routes/purchase-records.route'));
-    this.app.use(this.recipesPath, require('../routes/recipes.route'));
-    this.app.use(this.productionBatchesPath, require('../routes/production-batches.route'));
-    this.app.use(this.salesPath, require('../routes/sales.route'));
-    this.app.use(this.analyticsPath, require('../routes/analytics.route'));
+    for (const apiBasePath of this.apiBasePaths) {
+      this.app.use(apiBasePath, require('../routes/docs.route'));
+      this.app.use(`${apiBasePath}/status`, require('../routes/status.route'));
+      this.app.use(`${apiBasePath}/auth`, require('../routes/auth.route'));
+      this.app.use(`${apiBasePath}/ingredients`, require('../routes/ingredients.route'));
+      this.app.use(`${apiBasePath}/purchase-records`, require('../routes/purchase-records.route'));
+      this.app.use(`${apiBasePath}/recipes`, require('../routes/recipes.route'));
+      this.app.use(`${apiBasePath}/production-batches`, require('../routes/production-batches.route'));
+      this.app.use(`${apiBasePath}/sales`, require('../routes/sales.route'));
+      this.app.use(`${apiBasePath}/analytics`, require('../routes/analytics.route'));
+    }
 
     this.app.get('/', (req, res) => {
       res.json({

@@ -1,5 +1,5 @@
 {
-    "/api/**": {
+    "/awe/api/**": {
         "target": "http://backend:3000",
         "secure": false,
         "changeOrigin": true,

@@ -26,6 +26,6 @@ const authFetch = ((input: RequestInfo | URL, init?: RequestInit) => {
 }) as typeof fetch;
 
 export const apiClient = createClient<paths>({
-  baseUrl: '',
+  baseUrl: '/awe',
   fetch: authFetch,
 });
