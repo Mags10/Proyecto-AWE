@@ -62,9 +62,9 @@ jobs:
             exit 1
           fi
 
-          # Deploy backend and frontend so the browser can reach the API through the frontend proxy.
-          $DC up -d --build backend frontend
-          $DC ps backend frontend
+          # Deploy the full app stack so service config changes are reconciled too.
+          $DC up -d --build backend frontend mongo
+          $DC ps backend frontend mongo
 
       - name: Health check frontend
         shell: bash
@@ -105,5 +105,5 @@ jobs:
           if [[ "$api_ready" != true ]]; then
             echo "API health check failed"
           fi
-          $DC logs --tail=200 backend frontend || true
+          $DC logs --tail=200 backend frontend mongo || true
           exit 1

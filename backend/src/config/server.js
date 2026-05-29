@@ -1,9 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 
-const connectDB = require('./database');
-const ensureDefaultUsers = require('../startup/ensure-default-users');
-
 class Server {
   constructor() {
     this.app = express();
@@ -13,8 +10,6 @@ class Server {
 
     this.middlewares();
     this.routes();
-    connectDB();
-    ensureDefaultUsers();
   }
 
   middlewares() {
